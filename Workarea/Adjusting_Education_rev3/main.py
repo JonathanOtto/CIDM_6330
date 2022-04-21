@@ -4,6 +4,7 @@ import login as LoginClass
 questions = QuestionClass.Questions()
 login = LoginClass.Login()
 
+#Users login with a 6-digit number. valid numbers are [111111, 123456, 654321, 456789, 987654, 999999]
 userLength = True
 while (userLength):
     userID = int(input('Enter 6-digit User ID: '))
@@ -14,19 +15,18 @@ while (userLength):
         if(idType != 'Please enter a valid User ID.'):
             userLength = False
 
+#When logged in as a student, test questions are asked and score is recorded
 if (idType == 'Student'):
     assigned = login.getQuestions()
     for x in assigned:
         quiz = questions.question(x)
         questions.checkAnswer(quiz[0],quiz[1],quiz[2])
-
-
     score = (questions.getScore() / len(assigned))*100
-
     login.updateScore(userID, score)
 
     print(score)
 
+#When logged in as a teacher users can view student data and modify questions being asked
 if (idType == 'Teacher'):
     while (True):
         print("Welcome")

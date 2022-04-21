@@ -3,16 +3,16 @@ from sqlalchemy import create_engine, ForeignKey, null, select, Table
 from sqlalchemy import Column, Date, Integer, String, MetaData, update
 from sqlalchemy.ext.declarative import declarative_base
 
-
+#Reading in table "logins" from users.db
 engine = create_engine('sqlite:///users.db', echo=False)
 connection = engine.connect()
 metadata = MetaData()
 
-users = Table("users", metadata, autoload=True, autoload_with=engine)
+users = Table("logins", metadata, autoload=True, autoload_with=engine)
 stmt = select([users])
 results = connection.execute(stmt).fetchall()
 
-
+#Returns from the table each user type. Also each question is stored
 class Login:
     type = ""
     questions = []
@@ -28,17 +28,21 @@ class Login:
         else:
             return(self.type)
 
+#Returns the stored question
     def getQuestions(self):
         return(self.questions)
 
+#Pushes the users score back to the table
     def updateScore(self, id, newscore):
         updateScore = update(users).where(users.c.login == id).values(score = newscore)
         push = connection.execute(updateScore)
 
+#Pushes the assigned questions to table
     def updateQuestions(self, id, items):
         updateQuestion = update(users).where(users.c.login == id).values(questions = items)
         push = connection.execute(updateQuestion)
-    
+
+#Pulls students name, assigned questions, and score    
     def getInfo(self, id):
         for x in range(len(results)):
             row = results[x]
@@ -49,8 +53,4 @@ class Login:
                     score = 'Test not taken'
                 else:
                     score = str(row['score'])
-                print("Score: " + score)
-
-
-
-            
+                print("Score: " + score)            

@@ -4,7 +4,7 @@ from sqlalchemy import create_engine, ForeignKey, select, Table, true
 from sqlalchemy import Column, Date, Integer, String, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 
-
+#Reading in table "questions" from users.db
 engine = create_engine('sqlite:///users.db', echo=False)
 connection = engine.connect()
 metadata = MetaData()
@@ -13,9 +13,7 @@ questions = Table("questions", metadata, autoload=True, autoload_with=engine)
 stmt = select([questions])
 results = connection.execute(stmt).fetchall()
 
-
-
-
+#Returns from the table each questions text, choices, answers, and feedback
 class Questions:
     correctCount = 0
     def question(self, assign):
@@ -36,7 +34,7 @@ class Questions:
                         print("Please enter a valid response")
         return (userAnswer, correctAnswer, message)
 
-    
+ #Checks if answer is correct and prints feedback if wrong   
     def checkAnswer(self, answer, correct, message):
         if (answer == correct):
             print ("Correct, good job!")
@@ -45,14 +43,7 @@ class Questions:
             print("Incorrect")
             print(message)
 
+#Getting total correct in order to finalize score
     def getScore(self):
         return self.correctCount
     
-
-    def feedback(self, id, message):
-        if (id == "Teacher" and message == ""):
-            return ("Student got question correct")
-        if (id == "Teacher" and message != ""):
-            return ("Student got question wrong and recieved feedback of: " + message)
-        else:
-            return message
